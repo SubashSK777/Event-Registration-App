@@ -62,7 +62,7 @@
     <artifactId>mysql-connector-j</artifactId>
     <version>8.0.33</version>  <!-- ADD THIS LINE -->
     <scope>runtime</scope>
-</dependency>
+	</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
