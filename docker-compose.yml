@@ -1,19 +1,39 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mysql:
-    image: mysql:latest
-    container_name: mysql_container
+    image: mysql:8.0
+    container_name: mysql_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: event_scheduler
+      MYSQL_DATABASE: event_db
       MYSQL_USER: subash
-      MYSQL_PASSWORD: password123
+      MYSQL_PASSWORD: subashpassword
     ports:
       - "3306:3306"
+    networks:
+      - backend
     volumes:
       - mysql_data:/var/lib/mysql
+
+  springboot_app:
+    build: .
+    container_name: event_scheduler
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/event_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: subash
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+networks:
+  backend:
 
 volumes:
   mysql_data:
