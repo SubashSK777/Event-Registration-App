@@ -37,7 +37,7 @@ services:
     container_name: event_frontend
     restart: always
     depends_on:
-       - springboot_app
+      - springboot_app
     environment:
       BACKEND_URL: http://springboot_app:8080
     ports:
