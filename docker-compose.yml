@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 
 services:
   mysql:
@@ -8,8 +8,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: event_db
-      MYSQL_USER: subash
-      MYSQL_PASSWORD: password123
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
     ports:
       - "3306:3306"
     networks:
@@ -18,17 +18,30 @@ services:
       - mysql_data:/var/lib/mysql
 
   springboot_app:
-    build: ./backend  # FIXED: Set correct build context
+    build: ./backend
     container_name: event_scheduler
     restart: always
     depends_on:
       - mysql
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/event_db?useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: subash
-      SPRING_DATASOURCE_PASSWORD: password123
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
     ports:
       - "8080:8080"
+    networks:
+      - backend
+
+  frontend:
+    build: ./frontend  # Ensure frontend directory exists
+    container_name: event_frontend
+    restart: always
+    depends_on:
+      - springboot_app
+    environment:
+      BACKEND_URL: http://springboot_app:8080
+    ports:
+      - "3000:3000"
     networks:
       - backend
 
